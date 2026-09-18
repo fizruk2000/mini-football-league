@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       profiles: {
@@ -34,6 +34,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       seasons: {
         Row: {
@@ -60,6 +61,7 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
         };
+        Relationships: [];
       };
       teams: {
         Row: {
@@ -92,6 +94,15 @@ export interface Database {
           color_secondary?: string;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'teams_season_id_fkey';
+            columns: ['season_id'];
+            isOneToOne: false;
+            referencedRelation: 'seasons';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       players: {
         Row: {
@@ -124,6 +135,15 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'players_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       rounds: {
         Row: {
@@ -153,6 +173,15 @@ export interface Database {
           end_date?: string | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'rounds_season_id_fkey';
+            columns: ['season_id'];
+            isOneToOne: false;
+            referencedRelation: 'seasons';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       matches: {
         Row: {
@@ -200,6 +229,36 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'matches_season_id_fkey';
+            columns: ['season_id'];
+            isOneToOne: false;
+            referencedRelation: 'seasons';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'matches_round_id_fkey';
+            columns: ['round_id'];
+            isOneToOne: false;
+            referencedRelation: 'rounds';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'matches_home_team_id_fkey';
+            columns: ['home_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'matches_away_team_id_fkey';
+            columns: ['away_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       match_events: {
         Row: {
@@ -229,56 +288,87 @@ export interface Database {
           minute?: number | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'match_events_match_id_fkey';
+            columns: ['match_id'];
+            isOneToOne: false;
+            referencedRelation: 'matches';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_events_player_id_fkey';
+            columns: ['player_id'];
+            isOneToOne: false;
+            referencedRelation: 'players';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'match_events_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          }
+        ];
       };
     };
     Views: {
       standings: {
         Row: {
-          team_id: string;
-          team_name: string;
-          season_id: string;
-          played: number;
-          won: number;
-          drawn: number;
-          lost: number;
-          goals_for: number;
-          goals_against: number;
-          goal_diff: number;
-          points: number;
+          team_id: string | null;
+          team_name: string | null;
+          season_id: string | null;
+          played: number | null;
+          won: number | null;
+          drawn: number | null;
+          lost: number | null;
+          goals_for: number | null;
+          goals_against: number | null;
+          goal_diff: number | null;
+          points: number | null;
         };
+        Relationships: [];
       };
       top_scorers: {
         Row: {
-          player_id: string;
-          player_name: string;
-          team_name: string;
-          season_id: string;
-          goals: number;
+          player_id: string | null;
+          player_name: string | null;
+          team_name: string | null;
+          season_id: string | null;
+          goals: number | null;
         };
+        Relationships: [];
       };
       top_assists: {
         Row: {
-          player_id: string;
-          player_name: string;
-          team_name: string;
-          season_id: string;
-          assists: number;
+          player_id: string | null;
+          player_name: string | null;
+          team_name: string | null;
+          season_id: string | null;
+          assists: number | null;
         };
+        Relationships: [];
       };
       top_goalkeepers: {
         Row: {
-          player_id: string;
-          player_name: string;
-          team_name: string;
-          season_id: string;
-          clean_sheets: number;
-          saves: number;
+          player_id: string | null;
+          player_name: string | null;
+          team_name: string | null;
+          season_id: string | null;
+          clean_sheets: number | null;
+          saves: number | null;
         };
+        Relationships: [];
       };
     };
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
-}
+};
 
+// Удобные алиасы
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 export type Season = Database['public']['Tables']['seasons']['Row'];
 export type Team = Database['public']['Tables']['teams']['Row'];
